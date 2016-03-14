@@ -1,0 +1,195 @@
+﻿<%--  -amal_salh2006@yahoo.com --%>
+<%@ Master Language="C#" AutoEventWireup="true" CodeBehind="Site.master.cs" Inherits="online_library.SiteMaster" %>
+
+<!DOCTYPE html>
+<html lang="en">
+<head runat="server">
+   
+	<link href="http://fonts.googleapis.com/css?family=Cookie" rel="stylesheet" type="text/css">
+   <link  rel="stylesheet" href="css/lib.css"/>
+  <link rel="stylesheet" href="css/w3.css" />
+    <script src="Scripts/jquery-1.12.0.min.js"></script>
+    <script src="Scripts/jquery-migrate-1.2.1.min.js"></script>
+    <meta charset="utf-8" />
+    <title>Hope Library</title>
+    <script src="Scripts/dclock.js"></script>
+   <link rel="stylesheet" type="text/css" href="css/footer-distributed.css" />
+   <style>
+        li {
+    display: inline;
+}
+        .auto-style1 {
+            width: 28px;
+            height: 33px;
+        }
+       .grd th {
+           text-align:left;
+           color:green;
+           font-weight:bold;
+       }
+       .grd td {
+           font-family: Verdana;
+           font-weight: bold;
+           color: gray;
+       }
+       tr.row:hover td, 
+tr.row.over td
+{ 
+    background-color:green;
+    text-transform:capitalize;
+   
+}
+     
+    </style>
+  
+    <asp:ContentPlaceHolder runat="server" ID="HeadContent" />
+</head>
+<body>
+    <form runat="server">
+    
+    <header>
+      
+           
+            <asp:Image ID="Image1" runat="server" Height="50px" ImageUrl="~/Images/hope.png" Width="229px"  />
+             <div style="display:inline">
+        </div>
+      <div id="txt" class="text">
+          </div>
+          <div  class="w3-container w3-black" >
+<section class="color-1">
+    <nav class="cl-effect-14">
+        <ul  runat="server" style="list-style: none">
+            <li id="home" runat="server"><a href="booooks.aspx">Home</a></li>
+            
+          
+           
+                
+              <li id="register" runat="server"><a href="register.aspx">Register</a></li>
+                    <li id="login" runat="server"><a href="userlogin.aspx">Login</a></li>
+             
+            <li id="ad" runat="server" visible="false"><a href="admin.aspx">Admin</a></li>
+              <li id="p" runat="server" visible="false">  <a href="password_change.aspx"><img src="Images/ic_profile.png" class="auto-style1" /></a></li>
+             <li><a href="about.aspx">About US</a></li>
+            <li><a href="contactus.aspx">Contact US</a></li>
+        </ul>
+
+    </nav>
+			</section>
+            
+        </div> 
+           
+				
+         
+        
+           </header>
+        <div style="background-color:silver;">
+
+            <asp:HyperLink ID="hyperlogged" NavigateUrl="~/userlogin.aspx" runat="server" ForeColor="#0066FF">Login Here</asp:HyperLink>
+                 <asp:Label runat="server" ID="lbstatus" Text="" style="margin-right:10%"></asp:Label>
+                  
+            <asp:Label ID="Label1" runat="server"></asp:Label>
+
+            <asp:HyperLink ID="h_logout" NavigateUrl="~/logout.aspx" runat="server" ForeColor="#0066FF" Visible="False">Log Out</asp:HyperLink>
+
+        </div>
+                 
+
+       <div   class="w3-row-padding " >
+           <div style="width: 20%" class="w3-quarter">
+
+               <asp:GridView CssClass="grd" ID="GridView1" runat="server" AutoGenerateColumns="False" DataKeyNames="dept_id" DataSourceID="cateogry" Font-Bold="True" Font-Names="Verdana" OnSelectedIndexChanged="GridView1_SelectedIndexChanged" BorderStyle="None" ShowHeaderWhenEmpty="True">
+                   <Columns>
+                       <asp:BoundField DataField="dept_id" HeaderText="dept_id" InsertVisible="False" ReadOnly="True" SortExpression="dept_id" Visible="False" />
+                       <asp:BoundField DataField="dept_name" HeaderText="dept_name" SortExpression="dept_name" Visible="False" />
+                       <asp:TemplateField HeaderText="Categories">
+                           <ItemTemplate>
+                               <asp:HyperLink ID="HyperLink1" runat="server" NavigateUrl='<%# "./main_page.aspx?id=" + Eval("dept_id") %>' Text='<%# Eval("dept_name") %>'></asp:HyperLink>
+                           </ItemTemplate>
+                       </asp:TemplateField>
+                   </Columns>
+                   <RowStyle CssClass="row" />
+               </asp:GridView>
+
+               <asp:SqlDataSource ID="cateogry" runat="server" ConnectionString="<%$ ConnectionStrings:libr_con %>" SelectCommand="SELECT [dept_id], [dept_name] FROM [dept]"></asp:SqlDataSource>
+
+           </div>
+    <div class="w3-half" >
+        
+        <asp:ContentPlaceHolder runat="server" ID="FeaturedContent" />
+       
+            <asp:ContentPlaceHolder runat="server" ID="MainContent" />
+    </div>
+            <div class="w3-quarter">
+               
+
+            <asp:GridView ID="GridView2" CssClass="grd" runat="server" AutoGenerateColumns="False" DataKeyNames="b_id" DataSourceID="SqlDataSource1" CellPadding="0" Font-Bold="True" OnSelectedIndexChanged="GridView2_SelectedIndexChanged">
+                <Columns>
+                    <asp:BoundField DataField="b_id" HeaderText="b_id" InsertVisible="False" ReadOnly="True" SortExpression="b_id" Visible="False" />
+                    <asp:BoundField DataField="bookname" HeaderText="bookname" SortExpression="bookname" Visible="False" />
+                    <asp:BoundField DataField="link" HeaderText="link" SortExpression="link" Visible="False" />
+                    <asp:TemplateField HeaderText="Top Downloads">
+                        <ItemTemplate>
+                            <asp:LinkButton ID="LinkButton1"  runat="server" CommandName="Select" Text='<%# Eval("bookname") %>'></asp:LinkButton>
+                            
+                        </ItemTemplate>
+                    </asp:TemplateField>
+                </Columns>
+                 <HeaderStyle ForeColor="Black" />
+                   <RowStyle CssClass="row" />
+            </asp:GridView>
+                <br />
+            <asp:SqlDataSource ID="SqlDataSource1" runat="server" ConnectionString="<%$ ConnectionStrings:libr_con %>" SelectCommand="select top 10 b_id,bookname,link from book order by downloadtimes DESC;
+"></asp:SqlDataSource>
+
+                <br />
+                <br />
+
+
+                <asp:GridView ID="GridView3" CssClass="grd" runat="server" AutoGenerateColumns="False" DataKeyNames="b_id" DataSourceID="mostrecentsource" OnSelectedIndexChanged="GridView3_SelectedIndexChanged">
+                    <Columns>
+                        <asp:BoundField DataField="b_id" HeaderText="b_id" InsertVisible="False" ReadOnly="True" SortExpression="b_id" Visible="False" />
+                        <asp:BoundField DataField="bookname" HeaderText="bookname" SortExpression="bookname" Visible="False" />
+                          <asp:TemplateField HeaderText="Most Recent">
+                        <ItemTemplate>
+                            <asp:LinkButton ID="LinkButton2"  runat="server" CommandName="Select" Text='<%# Eval("bookname") %>'></asp:LinkButton>
+
+                        </ItemTemplate>
+                    </asp:TemplateField>
+                    </Columns>
+                    <RowStyle CssClass="row" />
+                </asp:GridView>
+                <br />
+                <asp:SqlDataSource ID="mostrecentsource" runat="server" ConnectionString="<%$ ConnectionStrings:libr_con %>" SelectCommand="select top 10 b_id,bookname from book order by addeddate desc"></asp:SqlDataSource>
+
+
+        </div>
+            </div>
+       
+   
+          <footer class="footer-distributed">
+
+			<div class="footer-right">
+                <%-- links to facebook page of library and twitter account --%>
+				<a href="http://www.facebook.com/lib"><i class="fa fa-facebook"></i></a>
+				<a href="http://www.twitter.com/lib"><i class="fa fa-twitter"></i></a>
+			
+			</div>
+
+			<div class="footer-left">
+
+				<p class="footer-links">
+					<a href="booooks.aspx">Home</a>
+					·
+					<a href="about.aspx">About</a>
+					·
+					<a href="contactus.aspx">Contact</a>
+				</p>
+
+				<p>Hope library © 2016</p>
+			</div>
+
+		</footer>
+    
+    </form>
+</body>
+</html>
