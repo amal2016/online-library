@@ -25,7 +25,7 @@ namespace online_library
 
         protected void ListView1_SelectedIndexChanged(object sender, EventArgs e)
         {
-            Session["id"] = ListView1.SelectedDataKey[0];
+            Session["id"] = ListView1.SelectedDataKey[0].ToString();
             Response.Redirect("bkdownload.aspx");
         }
 
