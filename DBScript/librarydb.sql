@@ -274,7 +274,8 @@ CREATE TABLE [dbo].[u_user](
   CONSTRAINT [chc_ststus] CHECK  (([ustatus]='Active' OR [ustatus]='block'))
  )
 // insert admin user
-insert into u_user(email,upassword,urole,fname,lname,username,country)values('adminnn@myweb.com','zz0123456X','admin','judi','kale','judi1995',240)
+insert into u_user(email,upassword,urole,fname,lname,username,country)
+values('adminnn@myweb.com','zz0123456X','admin','judi','kale','judi1995',240)
 
 //table of authors
 CREATE TABLE [dbo].[author](
@@ -304,7 +305,7 @@ CREATE TABLE [dbo].[author](
 	[downloadtimes] [int] NOT NULL DEFAULT ((0)),
 	[addeddate] [date] NULL DEFAULT (getdate())
 	)
-	//table of ratting of books
+	//table of rating of books
 	CREATE TABLE [dbo].[UserRatings](
 	[Id] [int] IDENTITY(1,1) primary key,
 	[Rating] [smallint] NOT NULL,
@@ -312,4 +313,129 @@ CREATE TABLE [dbo].[author](
 	[userid] [int] FOREIGN KEY REFERENCES[u_user] (userno)
 	)
 	
+	//proc to insert user
+	CREATE PROCEDURE [dbo].[Insert_User]
+      @email NVARCHAR(20),
+      @country NVARCHAR(20),
+      @dob NVARCHAR(30),
+	    @pass nvarchar(25),
+	  @status nvarchar(10),
+	  @rl nvarchar(12),
+	  @fn nvarchar(25),@ln nvarchar(25),@uname nvarchar(50)
+	
+AS
+BEGIN
+      SET NOCOUNT ON;
+      IF EXISTS(SELECT userno FROM u_user WHERE email = @email)
+      BEGIN
+            SELECT -1 -- email exists.
+      END
+     else if exists(select userno from u_user where username=@uname)
+          begin
+		  select 2 -----username exists  
+     end
+      ELSE
+      BEGIN
+            INSERT INTO u_user
+                    (email,country,dob,joindate,upassword,ustatus,urole,fname,lname,username)
+            VALUES
+                    (@email,@country,@dob,getdate(),@pass,@status,@rl,@fn,@ln,@uname)
+           
+            SELECT SCOPE_IDENTITY() -- UserId                 
+     END
+END
+
+
+
+GO
+//proc to insert category
+create procedure [dbo].[insertdept]
+@name nvarchar(50),
+@desc nvarchar(50)
+as
+begin
+if exists(select * from dept where dept_name=@name)
+begin
+select 1; --dept name exists before
+end
+else
+begin
+insert into dept values(@name,@desc)
+select 2; --inserted
+end
+
+end
+
+GO
+//
+proc to insert rating
+CREATE PROCEDURE [dbo].[insrtrating]
+(@rating smallint,@bookid int,@userid int)
+as
+ 
+begin
+if exists(select Rating from userratings where bookid=@bookid and userid=@userid)
+begin
+update UserRatings
+set rating=@rating where userid=@userid and bookid=@bookid
+end
+else
+begin
+insert into UserRatings(Rating,bookid,userid)values(@rating,@bookid,@userid)
+end
+end
+GO
+
+
+//
+proc to get number of login and register users for current day
+CREATE procedure [dbo].[numuser]
+
+@regist int output,
+@login int output
+as
+begin
+select @login=count(*) from u_user where lastlogin=cast(getdate() as date) 
+select @regist= count(*) from u_user where joindate=cast(getdate() as date)
+END
+
+
+
+GO
+//proc to validate user
+CREATE PROCEDURE [dbo].[Validate_User]
+      @Umail NVARCHAR(20),
+      @Password NVARCHAR(20)
+ ,@usename nvarchar(50) output,@case int output,@userid int output
+AS
+BEGIN
+      
+ IF @umail IS NOT NULL and @Password is not null
+BEGIN
+ IF  EXISTS(SELECT username FROM u_user WHERE email=@umail and upassword  = @Password and ustatus='active' and urole='admin')
+    BEGIN
+	select @usename =username,@userid=userno from u_user where email=@umail
+	set @case=-4 --admin
+			end
+else IF  EXISTS(SELECT username FROM u_user WHERE email=@umail and upassword  = @Password and ustatus='active' and urole='user')
+ BEGIN
+   UPDATE u_user
+ SET LastLogin = GETDATE()
+ WHERE email = @Umail
+ SET @case= -1  -- User Valid
+	select @usename =username,@userid=userno from u_user where email=@umail
+            END
+            ELSE 
 		
+			 
+			
+			begin
+			set @case= -3 --user invaild
+			end
+      END
+      
+END
+
+
+
+GO
