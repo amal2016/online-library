@@ -11,7 +11,7 @@
             <li><a href="usermanage.aspx">Manage Users</a></li>
             <li><a href="dept.aspx">Add Category</a></li>
             <li><a href="addauthor.aspx">Add Author</a></li>
-              <li><a href="m_dept.aspx">Manage Authors</a></li>
+              <li><a href="m_dept.aspx">Manage Categories</a></li>
             <li><a href="newbook.aspx">Add Book</a></li>
         </ul>
         </div>
